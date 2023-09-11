@@ -2,6 +2,23 @@
 
 {% block body %}
     <h2>Active Listings</h2>
+    {% if listings %}
+        {% for listing in listings %}
+        
+            <div class="card">
+                <div class="container">
+                    <a href="{% url 'listing_page' listing.id %}">
+                        <strong> {{ listing.item_name }} </strong>
+                    </a>
+                        <br>
+                        Starting Price: ${{ listing.starting_price }}
+                        <br>
+                        Description:{{ listing.description }}
 
-    TODO
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    {% endif %}
+
 {% endblock %}

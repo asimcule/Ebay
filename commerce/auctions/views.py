@@ -10,7 +10,13 @@ from .models import User, Listing, Category
 
 def index(request):
     # Put all the active listing here
-    return render(request, "auctions/index.html")
+    listings = Listing.objects.order_by('-created_at')
+    return render(request, "auctions/index.html", {"listings": listings})
+
+
+def listing_page(request, item_id):
+    listing_details = Listing.objects.get(id=item_id)
+    return render(request, "auctions/listing_page.html", {"listing": listing_details})
 
 
 def create_listing(request):
@@ -35,7 +41,6 @@ def create_listing(request):
 
 def login_view(request):
     if request.method == "POST":
-
         # Attempt to sign user in
         username = request.POST["username"]
         password = request.POST["password"]

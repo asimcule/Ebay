@@ -1,0 +1,18 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <div>
+        <h3>
+            {{ listing.item_name }}
+        </h3>
+        Starting Price: ${{ listing.starting_price }}
+        <br>
+        Description:{{ listing.description }}
+        <br>
+        Created:{{ listing.created_at }}
+        <br>
+        Listed By:{{ listing.listed_by }}
+        <br>
+        Category:{{ listing.category.category }}
+    </div>
+{% endblock %}
