@@ -4,9 +4,13 @@
     <h2>Active Listings</h2>
     {% if listings %}
         {% for listing in listings %}
-        
             <div class="card">
                 <div class="container">
+                    {% if listing.image is "" %}
+                        No image available
+                    {% else %}
+                        <img src="{{ listing.image }} " style="height: 150px; width: 200px;" align="left" />
+                    {% endif %}
                     <a href="{% url 'listing_page' listing.id %}">
                         <strong> {{ listing.item_name }} </strong>
                     </a>
@@ -14,7 +18,17 @@
                         Starting Price: ${{ listing.starting_price }}
                         <br>
                         Description:{{ listing.description }}
-
+                    <br>
+                    <br>
+                    {% if 'watchlist' in request.session %}
+                        {% if listing.id in request.session.watchlist %}
+                            <a href="{% url 'watchlist_remove' listing.id %}"> Remove from watchlist </a>
+                        {% else %}
+                            <a href="{% url 'watchlist_add' listing.id %}"> Add to watchlist </a>
+                        {% endif %}
+                    {% else %}
+                        <a href="{% url 'watchlist_add' listing.id %}"> Add to watchlist </a>
+                    {% endif %}
                 </div>
             </div>
         </a>

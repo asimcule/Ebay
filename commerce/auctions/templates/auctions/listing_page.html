@@ -2,6 +2,7 @@
 
 {% block body %}
     <div>
+        <img src="{{ listing.image }}" style="height: 300px; width: 500px;"/>
         <h3>
             {{ listing.item_name }}
         </h3>
@@ -14,5 +15,6 @@
         Listed By:{{ listing.listed_by }}
         <br>
         Category:{{ listing.category.category }}
+        <br>
     </div>
 {% endblock %}

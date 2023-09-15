@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse
 from .forms import ListingForm
 from .models import User, Listing, Category
@@ -10,8 +10,9 @@ from .models import User, Listing, Category
 
 def index(request):
     # Put all the active listing here
+    print(request.session['watchlist'])
     listings = Listing.objects.order_by('-created_at')
-    return render(request, "auctions/index.html", {"listings": listings})
+    return render(request, "auctions/index.html", {"listings": listings, "request": request})
 
 
 def listing_page(request, item_id):
@@ -34,7 +35,7 @@ def create_listing(request):
                               category=category)
             listing.save()
             # print(form.cleaned_data["item_name"])
-        return render(request, "auctions/create_listing.html", {"form": form})
+        return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "auctions/create_listing.html", {"form": form})
 
@@ -88,3 +89,22 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "auctions/register.html")
+
+
+def watchlist_add(request, item_id):
+    if 'watchlist' in request.session:
+        request.session['watchlist'].append(int(item_id))
+        request.session.modified = True
+    else:
+        request.session['watchlist'] = []
+        request.session['watchlist'].append(int(item_id))
+        request.session.modified = True
+
+    return HttpResponseRedirect(reverse("index"))
+
+
+def watchlist_remove(request, item_id):
+    item_id = int(item_id)
+    request.session['watchlist'].remove(int(item_id))
+    request.session.modified = True
+    return HttpResponseRedirect(reverse("index"))
