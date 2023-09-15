@@ -20,15 +20,20 @@
                         Description:{{ listing.description }}
                     <br>
                     <br>
-                    {% if 'watchlist' in request.session %}
-                        {% if listing.id in request.session.watchlist %}
-                            <a href="{% url 'watchlist_remove' listing.id %}"> Remove from watchlist </a>
+                    {% if request.user.is_authenticated %}
+                        {% if 'watchlist' in request.session %}
+                            {% if listing.id in request.session.watchlist %}
+                                <a href="{% url 'watchlist_remove' listing.id %}"> Remove from watchlist </a>
+                            {% else %}
+                                <a href="{% url 'watchlist_add' listing.id %}"> Add to watchlist </a>
+                            {% endif %}
                         {% else %}
                             <a href="{% url 'watchlist_add' listing.id %}"> Add to watchlist </a>
                         {% endif %}
                     {% else %}
-                        <a href="{% url 'watchlist_add' listing.id %}"> Add to watchlist </a>
+                        <a href="{% url 'login' %}"> Add to watchlist </a>
                     {% endif %}
+
                 </div>
             </div>
         </a>

@@ -1,6 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from .forms import ListingForm
@@ -10,7 +11,6 @@ from .models import User, Listing, Category
 
 def index(request):
     # Put all the active listing here
-    print(request.session['watchlist'])
     listings = Listing.objects.order_by('-created_at')
     return render(request, "auctions/index.html", {"listings": listings, "request": request})
 
