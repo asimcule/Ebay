@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from .forms import ListingForm
-from .models import User, Listing, Category
+from .models import User, Listing, Category, Bid
 
 # from .utils import formParser
 
@@ -17,7 +17,34 @@ def index(request):
 
 def listing_page(request, item_id):
     listing_details = Listing.objects.get(id=item_id)
-    return render(request, "auctions/listing_page.html", {"listing": listing_details})
+    current_user = User.objects.get(username=request.user)   #current_logged in user
+    item_lister = Listing.objects.get(id=item_id).listed_by
+    if request.method == "GET":
+        if listing_details.is_open:
+            if current_user != item_lister:
+                return render(request, "auctions/listing_page.html", {"listing": listing_details, "bid_form": True})
+
+            else:
+                # The bid is open and the current user is the person who open the bid so they have the option to turn it off!
+                return render(request, "auctions/listing_page.html", {"listing": listing_details, "bid_form": False})
+            
+    # else:
+    #     bid_value = request.POST['bid']
+    #     original_price = listing_details.starting_price
+    #     bid_info = Bid.objects.filter(listing=item_id)
+    #     if bid_info:
+    #         print("exists")
+    #     else:
+    #         if bid_value >= original_price:
+    #             user = User.objects.get(username=request.GET['user'])
+    #             bid = Bid(bidder=user, )
+    #         print("nONE")
+    #     # print(bid_info)
+    #     return render(request, "auctions/listing_page.html", {"listing": listing_details})
+
+
+def update_bid_status():
+    pass
 
 
 def create_listing(request):
@@ -108,3 +135,16 @@ def watchlist_remove(request, item_id):
     request.session['watchlist'].remove(int(item_id))
     request.session.modified = True
     return HttpResponseRedirect(reverse("index"))
+
+
+def watchlist(request):
+    if 'watchlist' in request.session:
+        watchlist_item_number = request.session['watchlist']
+        watchlist_items = Listing.objects.filter(id__in=watchlist_item_number)
+        context = {
+            'items': watchlist_items
+        }
+        return render(request, 'auctions/watchlist.html', context)
+    else:
+        return render(request, 'auctions/watchlist.html')
+

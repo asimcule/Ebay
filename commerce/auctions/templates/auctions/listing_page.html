@@ -17,4 +17,39 @@
         Category:{{ listing.category.category }}
         <br>
     </div>
+
+    <div>
+        <br>
+        <br>
+        <h3> Current Bid: </h3>
+        <h3> bids so far </h3>
+        {% if bid_form %}
+            <form method="POST">
+                <input type="text" name="bid" placeholder="Bid">
+                {% csrf_token %}
+                <input type="submit">
+            </form>
+        {% else %}
+            Close bid
+        {% endif %}
+            
+    </div>
+
+
+
+
+
+        {% if request.user.is_authenticated %}
+        {% if 'watchlist' in request.session %}
+            {% if listing.id in request.session.watchlist %}
+                <a href="{% url 'watchlist_remove' listing.id %}"> Remove from watchlist </a>
+            {% else %}
+                <a href="{% url 'watchlist_add' listing.id %}"> Add to watchlist </a>
+            {% endif %}
+        {% else %}
+            <a href="{% url 'watchlist_add' listing.id %}"> Add to watchlist </a>
+        {% endif %}
+        {% else %}
+            <a href="{% url 'login' %}"> Add to watchlist </a>
+        {% endif %}
 {% endblock %}

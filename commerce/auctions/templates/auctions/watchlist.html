@@ -1,0 +1,45 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    {% if items %}
+        {% for item in items %}
+        <div class="card">
+            <div class="container">
+                <img src="{{ item.image }}" style="height: 300px; width: 500px;"/>
+                <h3>
+                    <a href="{% url 'listing_page' item.id %}">
+                        {{ item.item_name }}
+                    </a>
+                </h3>
+                Starting Price: ${{ item.starting_price }}
+                <br>
+                Description:{{ item.description }}
+                <br>
+                Created:{{ item.created_at }}
+                <br>
+                Listed By:{{ item.listed_by }}
+                <br>
+                Category:{{ item.category.category }}
+                <br>
+                {% if request.user.is_authenticated %}
+                    {% if 'watchlist' in request.session %}
+                        {% if item.id in request.session.watchlist %}
+                            <a href="{% url 'watchlist_remove' item.id %}"> Remove from watchlist </a>
+                        {% else %}
+                            <a href="{% url 'watchlist_add' item.id %}"> Add to watchlist </a>
+                        {% endif %}
+                    {% else %}
+                        <a href="{% url 'watchlist_add' item.id %}"> Add to watchlist </a>
+                    {% endif %}
+                {% else %}
+                    <a href="{% url 'login' %}"> Add to watchlist </a>
+                {% endif %}
+            </div>
+        </div>
+
+
+        {% endfor %}
+    {% else %}
+            <h3> No Watchlisted Item!</h3>
+    {% endif %}
+{% endblock %}

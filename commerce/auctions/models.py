@@ -21,7 +21,7 @@ class Listing(models.Model):
     image = models.TextField(null=True, blank=True, default=None)
     description = models.TextField(max_length=400, null=True, blank=True, default=None)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
-
+    is_open = models.BooleanField(default=True)
 
 class Bid(models.Model):
     id = models.AutoField(primary_key=True)
